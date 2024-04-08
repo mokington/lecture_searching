@@ -1,27 +1,22 @@
 import json
 
-def pattern_search(sequence, pattern):
+def binary_search(sorted_sequence, target_number):
     """
-    Searches for all occurrences of a pattern in a given sequence. Automatically
-    skips to the next character in the sequence upon the first mismatch.
-    :param sequence: (str), the sequence to search in
-    :param pattern: (str), the pattern to search for
-    :return: set of positions (indexes) where the pattern occurs in the sequence
+    Performs binary search on a sorted sequence to find the target number.
+    :param sorted_sequence: (list of int), sorted list of numbers
+    :param target_number: (int), the number to search for
+    :return: index of the target_number in sorted_sequence or None if not found
     """
-    positions = set()  # Use a set to store positions to avoid duplicates
-    index = 0
-    while index <= len(sequence) - len(pattern):
-        match_found = True
-        for pattern_index in range(len(pattern)):
-            if sequence[index + pattern_index] != pattern[pattern_index]:
-                match_found = False
-                break  # Break out of the inner loop if a mismatch is found
-        if match_found:
-            positions.add(index)
-            index += 1  # Move to the next character after finding a match
+    left, right = 0, len(sorted_sequence) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if sorted_sequence[mid] == target_number:
+            return mid
+        elif sorted_sequence[mid] < target_number:
+            left = mid + 1
         else:
-            index += max(1, pattern_index)  # Skip to the next character or beyond based on the mismatch
-    return positions
+            right = mid - 1
+    return None
 
 def read_data(file_name, field):
     """
@@ -39,14 +34,17 @@ def read_data(file_name, field):
         return None
 
 def main():
-    dna_sequence = read_data("sequential.json", "dna_sequence")
-    if dna_sequence is not None:
-        print("DNA Sequence:", dna_sequence)
-        # Define the pattern to search for, e.g., "ATA"
-        search_pattern = "ATA"
-        # Call the pattern_search function
-        pattern_positions = pattern_search(dna_sequence, search_pattern)
-        print(f"Positions of pattern '{search_pattern}' in the sequence:", pattern_positions)
+    ordered_numbers = read_data("sequential.json", "ordered_numbers")
+    if ordered_numbers is not None:
+        print("Ordered Numbers:", ordered_numbers)
+        # Define the number to search for, e.g., 42
+        target_number = 42
+        # Call the binary_search function
+        index = binary_search(ordered_numbers, target_number)
+        if index is not None:
+            print(f"Number {target_number} found at index {index}.")
+        else:
+            print(f"Number {target_number} not found in the sequence.")
     else:
         print("No data to search.")
 
